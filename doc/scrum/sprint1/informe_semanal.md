@@ -31,7 +31,7 @@ Se ha trabajado en:
 |---|---|---|
 | Creación del repositorio | David | Completada |
 | Organización de la estructura | David | Completada |
-| Milestone e issues | David | Completada |
+| Milestone e issues | Ferran | Completada |
 | ERS | Ferran | Completada |
 | Requisitos RF/RNF | Ferran | Completada |
 | Diagrama y casos de uso | David | Completada |
