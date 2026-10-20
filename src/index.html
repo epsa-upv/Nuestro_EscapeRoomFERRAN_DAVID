@@ -1,52 +1,36 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Escape Rooms – Prototipo Sprint 1</title>
-<style>
-body{font-family:system-ui,sans-serif;max-width:760px;margin:0 auto;padding:16px;background:#14161c;color:#eee}
-h1{font-size:1.4rem}.card{background:#1f2330;border-radius:10px;padding:12px;margin:10px 0}
-button{background:#e0a030;border:0;border-radius:6px;padding:6px 12px;cursor:pointer;font-weight:600}
-input,select{padding:6px;border-radius:6px;border:1px solid #444;background:#0f1117;color:#eee;margin:2px}
-.err{color:#ff7b7b}.ok{color:#7be08a}
-</style></head><body>
-<h1>🔐 Escape Rooms</h1><div id="app"></div>
+<html lang="es"><head><meta charset="utf-8"><title>Escape Rooms – Prototipo</title></head>
+<body style="font-family:sans-serif;max-width:500px;margin:20px auto">
+<h1>Escape Rooms</h1>
+
+<h3>Salas</h3>
+<ul>
+  <li>La mansión del terror (Terror)</li>
+  <li>Misión Marte (Ciencia ficción)</li>
+  <li>El crimen del museo (Misterio)</li>
+</ul>
+
+<h3>Reservar</h3>
+<select id="sala">
+  <option>La mansión del terror</option>
+  <option>Misión Marte</option>
+  <option>El crimen del museo</option>
+</select>
+<select id="hora"><option>17:00</option><option>19:00</option><option>21:00</option></select>
+<input id="nombre" placeholder="Tu nombre">
+<button onclick="reservar()">Reservar</button>
+
+<h3>Reservas</h3>
+<ul id="lista"></ul>
+
 <script>
-const users=[{u:"admin",p:"admin123",rol:"admin",fails:0},{u:"jugador",p:"1234",rol:"jugador",fails:0}];
-let rooms=[
- {id:1,n:"La mansión del terror",t:"Terror",d:"Alta",min:60,cap:6},
- {id:2,n:"Misión Marte",t:"Ciencia ficción",d:"Media",min:60,cap:8},
- {id:3,n:"El crimen del museo",t:"Misterio",d:"Baja",min:60,cap:5}];
-let sessions=[];let k=1;
-rooms.forEach(r=>["17:00","19:00","21:00"].forEach(h=>sessions.push({id:k++,room:r.id,h,res:[]})));
-let me=null,msg="",nextRoom=4;
-const $=s=>document.getElementById(s);
-function login(){const u=users.find(x=>x.u===$("u").value);
- if(u&&u.fails>=5){msg="Cuenta bloqueada tras 5 intentos fallidos.";return draw()}
- if(u&&u.p===$("p").value){u.fails=0;me=u;msg=""}
- else{if(u)u.fails++;msg="Usuario o contraseña incorrectos."}draw()}
-function logout(){me=null;msg="";draw()}
-function free(s){const r=rooms.find(x=>x.id===s.room);return r.cap-s.res.reduce((a,b)=>a+b.n,0)}
-function reserve(id){const s=sessions.find(x=>x.id===id),n=+$("n"+id).value,r=rooms.find(x=>x.id===s.room);
- if(n<1||n>r.cap)msg="El número de jugadores debe estar entre 1 y "+r.cap+".";
- else if(n>free(s))msg="No hay plazas suficientes en esa sesión.";
- else{s.res.push({u:me.u,n});msg="Reserva confirmada."}draw()}
-function cancel(id,i){sessions.find(x=>x.id===id).res.splice(i,1);msg="Reserva cancelada.";draw()}
-function addRoom(){const n=$("rn").value.trim();if(!n){msg="Indica un nombre.";return draw()}
- const r={id:nextRoom++,n,t:$("rt").value,d:$("rd").value,min:60,cap:+$("rc").value};rooms.push(r);
- ["17:00","19:00","21:00"].forEach(h=>sessions.push({id:k++,room:r.id,h,res:[]}));msg="Sala creada.";draw()}
-function delRoom(id){rooms=rooms.filter(r=>r.id!==id);sessions=sessions.filter(s=>s.room!==id);msg="Sala eliminada.";draw()}
-function draw(){let h="";
- if(!me){h=`<div class="card"><b>Iniciar sesión</b><br><input id="u" placeholder="Usuario"><input id="p" type="password" placeholder="Contraseña"><button onclick="login()">Entrar</button></div>`}
- else{h=`<div class="card">Hola, <b>${me.u}</b> (${me.rol}) <button onclick="logout()">Salir</button></div>`;
-  rooms.forEach(r=>{h+=`<div class="card"><b>${r.n}</b> · ${r.t} · Dificultad ${r.d} · ${r.min} min · hasta ${r.cap} jugadores`;
-   if(me.rol==="admin")h+=` <button onclick="delRoom(${r.id})">Eliminar</button>`;
-   sessions.filter(s=>s.room===r.id).forEach(s=>{h+=`<div>🕒 ${s.h} — plazas libres: ${free(s)}`;
-    if(me.rol==="jugador")h+=` <input id="n${s.id}" type="number" value="2" min="1" style="width:55px"><button onclick="reserve(${s.id})">Reservar</button>`;
-    h+=`</div>`});h+=`</div>`});
-  if(me.rol==="jugador"){h+=`<div class="card"><b>Mis reservas</b>`;let any=false;
-   sessions.forEach(s=>s.res.forEach((x,i)=>{if(x.u===me.u){any=true;h+=`<div>${rooms.find(r=>r.id===s.room).n} · ${s.h} · ${x.n} jugadores <button onclick="cancel(${s.id},${i})">Cancelar</button></div>`}}));
-   if(!any)h+=`<div>Aún no tienes reservas.</div>`;h+=`</div>`}
-  else h+=`<div class="card"><b>Nueva sala</b><br><input id="rn" placeholder="Nombre"><input id="rt" placeholder="Temática" value="Misterio"><select id="rd"><option>Baja</option><option>Media</option><option>Alta</option></select><input id="rc" type="number" value="6" min="2" max="8" style="width:55px"><button onclick="addRoom()">Crear</button></div>`}
- if(msg)h+=`<p class="${/confirmada|creada|cancelada|eliminada/.test(msg)?'ok':'err'}">${msg}</p>`;
- $("app").innerHTML=h}
-draw();
-</script></body></html>
+const reservas=[];
+function reservar(){
+  const nombre=document.getElementById("nombre").value.trim();
+  if(!nombre) return alert("Escribe tu nombre");
+  reservas.push(sala.value+" · "+hora.value+" · "+nombre);
+  lista.innerHTML=reservas.map(r=>"<li>"+r+"</li>").join("");
+}
+</script>
+</body></html>
+
