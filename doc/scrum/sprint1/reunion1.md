@@ -11,43 +11,45 @@
 
 ## 1. Objetivo de la reunión
 
-El objetivo de esta primera reunión es establecer el alcance del Sprint 1, decidir el tipo de sistema de Escape Rooms que se desarrollará y distribuir las tareas iniciales entre los miembros del equipo.
+El objetivo de esta reunión es establecer el alcance del Sprint 1, decidir el tipo de sistema que se desarrollará y distribuir las tareas entre los miembros del equipo.
 
-Durante la reunión también se acuerda la organización del repositorio GitHub y la forma de trabajo que se seguirá durante el sprint.
+También se establece la organización inicial del repositorio GitHub.
 
 ---
 
 ## 2. Decisiones iniciales
 
-Se decide desarrollar un sistema para la creación y gestión de un negocio de Escape Rooms presenciales.
+Se desarrollará un sistema para gestionar Escape Rooms presenciales.
 
-Las salas tendrán diferentes temáticas, como:
+Las principales temáticas contempladas serán:
 
 - Terror.
 - Misterio.
 - Ciencia ficción.
 - Aventura.
 
-El sistema tendrá inicialmente dos tipos principales de usuario:
+El sistema tendrá dos actores principales:
 
 - Jugador.
 - Administrador.
 
-También se acuerda que los pagos no formarán parte del sistema, ya que se realizarán físicamente en el establecimiento.
+Los pagos quedan fuera del alcance del sistema y se realizarán en el establecimiento.
 
 ---
 
 ## 3. Objetivo del Sprint 1
 
-El objetivo principal del Sprint 1 será analizar los requisitos iniciales del sistema y desarrollar un primer prototipo funcional.
+El objetivo será analizar los requisitos iniciales y desarrollar un primer prototipo funcional.
 
-Los principales resultados esperados serán:
+Los resultados esperados son:
 
-- Especificación inicial de requisitos software.
-- Identificación de actores y casos de uso.
+- Especificación inicial de requisitos.
+- Identificación de actores.
+- Requisitos funcionales y no funcionales.
 - Diagrama de casos de uso.
+- Especificación de casos de uso.
 - Primer prototipo funcional.
-- Documentación del trabajo realizado durante el sprint.
+- Documentación Scrum.
 
 ---
 
@@ -55,24 +57,24 @@ Los principales resultados esperados serán:
 
 | Tarea | Responsable | Estado inicial |
 |---|---|---|
-| Crear y configurar el repositorio GitHub | David | Pendiente |
-| Crear la estructura `doc/`, `src/` y `lib/` | David | Pendiente |
-| Crear milestone e issues del Sprint 1 | David | Pendiente |
-| Elaborar la Especificación de Requisitos Software | Ferran | Pendiente |
-| Definir requisitos funcionales y no funcionales | Ferran | Pendiente |
+| Crear y configurar el repositorio | David | Pendiente |
+| Crear estructura del repositorio | David | Pendiente |
+| Crear milestone e issues | David | Pendiente |
+| Elaborar ERS | Ferran | Pendiente |
+| Definir requisitos RF/RNF | Ferran | Pendiente |
 | Elaborar diagrama y casos de uso | David | Pendiente |
-| Desarrollar interfaz y funciones del jugador | Ferran | Pendiente |
-| Desarrollar funciones básicas de administración | David | Pendiente |
-| Redactar primera acta de reunión | Ferran | Pendiente |
-| Redactar segunda acta de reunión | David | Pendiente |
-| Elaborar informe semanal | Ferran | Pendiente |
-| Preparar Sprint Review | David | Pendiente |
+| Interfaz y funcionalidades del jugador | Ferran | Pendiente |
+| Funciones de administración | David | Pendiente |
+| Primera acta Scrum | Ferran | Pendiente |
+| Segunda acta Scrum | David | Pendiente |
+| Informe semanal | Ferran | Pendiente |
+| Sprint Review | David | Pendiente |
 
 ---
 
-## 5. Tecnologías acordadas
+## 5. Tecnologías
 
-Para el desarrollo del primer prototipo se utilizarán:
+Se utilizarán:
 
 - HTML5.
 - CSS.
@@ -80,8 +82,11 @@ Para el desarrollo del primer prototipo se utilizarán:
 - Git.
 - GitHub.
 
-En esta primera versión no se utilizará una base de datos.
-
-Los datos necesarios para realizar las pruebas del prototipo se almacenarán temporalmente en memoria mediante JavaScript.
+Durante el Sprint 1 no se utilizará base de datos.
 
 ---
+
+
+lib/
+
+README.md
