@@ -1,25 +1,87 @@
-# Acta de reunión SCRUM
-**Tipo de reunión:** Sprint planning
-**Fecha y hora:** 08/10/2026, 16:00  *(ajustar a la fecha real)*
-**Asistentes y roles:** Fer (Scrum Master), David (Product Owner / Desarrollador)
-**Duración:** 40 minutos · **Sprint:** 1.º Sprint
+# Acta de reunión – Sprint Planning
 
-## Objetivo de la reunión
-1. Elegir el tipo de escape rooms que gestionará el sistema.
-2. Definir y repartir las tareas del Sprint 1.
+**Proyecto:** Sistema de creación y gestión de Escape Rooms  
+**Sprint:** Sprint 1  
+**Tipo de reunión:** Sprint Planning  
+**Fecha:** 12/10/2026  
+**Asistentes:** Ferran y David  
+**Duración aproximada:** 30 minutos  
 
-## Temas tratados
-| Tarea (issue) | Descripción | Responsable | Estado |
-|---|---|---|---|
-| Crear repositorio y estructura | `doc/`, `src/`, `lib/`, milestone "Sprint 1" | Fer | Pendiente |
-| Redactar requisitos RF/RNF | Apartados 1–4 del ERS | Fer | Pendiente |
-| Casos de uso y diagrama | Apartados 5–6 del ERS | David | Pendiente |
-| Prototipo funcional | Login, salas y reservas | David | Pendiente |
-| Wireframe (opcional) | Pantallas principales | Fer | Pendiente |
+---
 
-## Avances y problemáticas detectadas
-Aún sin avances; se duda del alcance (pagos online), que se deja fuera.
-## Acuerdos
-Escape rooms temáticos presenciales; roles Jugador y Administrador; stack HTML + CSS + JavaScript.
-## Observaciones
-Todos los issues se asocian al milestone "Sprint 1".
+## 1. Objetivo de la reunión
+
+El objetivo de esta primera reunión es establecer el alcance del Sprint 1, decidir el tipo de sistema de Escape Rooms que se desarrollará y distribuir las tareas iniciales entre los miembros del equipo.
+
+Durante la reunión también se acuerda la organización del repositorio GitHub y la forma de trabajo que se seguirá durante el sprint.
+
+---
+
+## 2. Decisiones iniciales
+
+Se decide desarrollar un sistema para la creación y gestión de un negocio de Escape Rooms presenciales.
+
+Las salas tendrán diferentes temáticas, como:
+
+- Terror.
+- Misterio.
+- Ciencia ficción.
+- Aventura.
+
+El sistema tendrá inicialmente dos tipos principales de usuario:
+
+- Jugador.
+- Administrador.
+
+También se acuerda que los pagos no formarán parte del sistema, ya que se realizarán físicamente en el establecimiento.
+
+---
+
+## 3. Objetivo del Sprint 1
+
+El objetivo principal del Sprint 1 será analizar los requisitos iniciales del sistema y desarrollar un primer prototipo funcional.
+
+Los principales resultados esperados serán:
+
+- Especificación inicial de requisitos software.
+- Identificación de actores y casos de uso.
+- Diagrama de casos de uso.
+- Primer prototipo funcional.
+- Documentación del trabajo realizado durante el sprint.
+
+---
+
+## 4. Reparto de tareas
+
+| Tarea | Responsable | Estado inicial |
+|---|---|---|
+| Crear y configurar el repositorio GitHub | David | Pendiente |
+| Crear la estructura `doc/`, `src/` y `lib/` | David | Pendiente |
+| Crear milestone e issues del Sprint 1 | David | Pendiente |
+| Elaborar la Especificación de Requisitos Software | Ferran | Pendiente |
+| Definir requisitos funcionales y no funcionales | Ferran | Pendiente |
+| Elaborar diagrama y casos de uso | David | Pendiente |
+| Desarrollar interfaz y funciones del jugador | Ferran | Pendiente |
+| Desarrollar funciones básicas de administración | David | Pendiente |
+| Redactar primera acta de reunión | Ferran | Pendiente |
+| Redactar segunda acta de reunión | David | Pendiente |
+| Elaborar informe semanal | Ferran | Pendiente |
+| Preparar Sprint Review | David | Pendiente |
+
+---
+
+## 5. Tecnologías acordadas
+
+Para el desarrollo del primer prototipo se utilizarán:
+
+- HTML5.
+- CSS.
+- JavaScript.
+- Git.
+- GitHub.
+
+En esta primera versión no se utilizará una base de datos.
+
+Los datos necesarios para realizar las pruebas del prototipo se almacenarán temporalmente en memoria mediante JavaScript.
+
+---
