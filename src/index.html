@@ -1,36 +1,730 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="utf-8"><title>Escape Rooms – Prototipo</title></head>
-<body style="font-family:sans-serif;max-width:500px;margin:20px auto">
-<h1>Escape Rooms</h1>
+<html lang="es">
 
-<h3>Salas</h3>
-<ul>
-  <li>La mansión del terror (Terror)</li>
-  <li>Misión Marte (Ciencia ficción)</li>
-  <li>El crimen del museo (Misterio)</li>
-</ul>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<h3>Reservar</h3>
-<select id="sala">
-  <option>La mansión del terror</option>
-  <option>Misión Marte</option>
-  <option>El crimen del museo</option>
-</select>
-<select id="hora"><option>17:00</option><option>19:00</option><option>21:00</option></select>
-<input id="nombre" placeholder="Tu nombre">
-<button onclick="reservar()">Reservar</button>
+    <title>EscapeHub | Escape Rooms</title>
 
-<h3>Reservas</h3>
-<ul id="lista"></ul>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f5f6fa;
+            color: #1f2937;
+            min-height: 100vh;
+        }
+
+        header {
+            background: linear-gradient(135deg, #111827, #312e81);
+            color: white;
+            padding: 28px 40px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-content {
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        .logo h1 {
+            font-size: 28px;
+        }
+
+        .logo p {
+            color: #c7d2fe;
+            margin-top: 5px;
+            font-size: 14px;
+        }
+
+        main {
+            max-width: 1150px;
+            margin: 35px auto;
+            padding: 0 20px 50px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 18px;
+            padding: 26px;
+            margin-bottom: 24px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        h2 {
+            margin-bottom: 7px;
+        }
+
+        h3 {
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+
+        button {
+            border: none;
+            border-radius: 10px;
+            padding: 11px 17px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: 0.2s;
+        }
+
+        .primary {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .primary:hover {
+            background: #4338ca;
+            transform: translateY(-1px);
+        }
+
+        .secondary {
+            background: #eef2ff;
+            color: #4338ca;
+        }
+
+        .danger {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 7px;
+            font-size: 14px;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 12px 13px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            outline: none;
+            background: white;
+            font-size: 14px;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.13);
+        }
+
+        .form-group {
+            margin-bottom: 17px;
+        }
+
+        .login-container {
+            max-width: 430px;
+            margin: 60px auto;
+        }
+
+        .login-icon {
+            width: 68px;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border-radius: 18px;
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        .credentials {
+            margin-top: 20px;
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 15px;
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.7;
+        }
+
+        .error {
+            color: #b91c1c;
+            font-weight: 600;
+            margin-top: 14px;
+        }
+
+        .success {
+            color: #047857;
+            font-weight: 600;
+            margin-top: 14px;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .room {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #e5e7eb;
+            background: #fafafa;
+            transition: 0.2s;
+        }
+
+        .room:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+        }
+
+        .room-image {
+            height: 120px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 42px;
+            color: white;
+            background: linear-gradient(135deg, #4338ca, #7c3aed);
+        }
+
+        .room-content {
+            padding: 18px;
+        }
+
+        .tag {
+            display: inline-block;
+            background: #eef2ff;
+            color: #4338ca;
+            padding: 5px 9px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .room h4 {
+            margin-bottom: 8px;
+        }
+
+        .room-info {
+            color: #6b7280;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .booking-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        .reservation {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .reservation:last-child {
+            border-bottom: none;
+        }
+
+        .reservation-data {
+            color: #6b7280;
+            margin-top: 5px;
+            font-size: 13px;
+        }
+
+        @media(max-width: 800px) {
+            .rooms-grid,
+            .booking-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .panel-header,
+            .reservation {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <div class="header-content">
+        <div class="logo">
+            <h1>🔐 EscapeHub</h1>
+            <p>Sistema de gestión de Escape Rooms</p>
+        </div>
+    </div>
+</header>
+
+<main>
+
+    <!-- LOGIN -->
+
+    <section id="login" class="login-container">
+
+        <div class="card">
+
+            <div class="login-icon">
+                🔑
+            </div>
+
+            <h2>Bienvenido</h2>
+
+            <p class="subtitle">
+                Inicia sesión para acceder al sistema.
+            </p>
+
+            <div class="form-group">
+                <label>Usuario</label>
+                <input id="username" placeholder="Introduce tu usuario">
+            </div>
+
+            <div class="form-group">
+                <label>Contraseña</label>
+                <input id="password" type="password"
+                       placeholder="Introduce tu contraseña">
+            </div>
+
+            <button class="primary" onclick="login()">
+                Iniciar sesión
+            </button>
+
+            <p id="loginError" class="error"></p>
+
+            <div class="credentials">
+
+                <strong>Usuario de demostración</strong>
+
+                <br><br>
+
+                Jugador:
+                <b>jugador</b> /
+                <b>1234</b>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- PANEL JUGADOR -->
+
+    <section id="playerPanel" class="hidden">
+
+        <div class="card panel-header">
+
+            <div>
+
+                <h2>Panel del jugador</h2>
+
+                <p class="subtitle">
+                    Explora nuestras salas y reserva una sesión.
+                </p>
+
+            </div>
+
+            <button class="secondary" onclick="logout()">
+                Cerrar sesión
+            </button>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Escape Rooms disponibles</h3>
+
+            <div class="rooms-grid">
+
+                <div class="room">
+
+                    <div class="room-image">
+                        🏚️
+                    </div>
+
+                    <div class="room-content">
+
+                        <span class="tag">TERROR</span>
+
+                        <h4>La mansión del terror</h4>
+
+                        <div class="room-info">
+                            Dificultad: Alta<br>
+                            Duración: 60 min<br>
+                            Capacidad: 6 jugadores
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="room">
+
+                    <div class="room-image">
+                        🚀
+                    </div>
+
+                    <div class="room-content">
+
+                        <span class="tag">CIENCIA FICCIÓN</span>
+
+                        <h4>Misión Marte</h4>
+
+                        <div class="room-info">
+                            Dificultad: Media<br>
+                            Duración: 60 min<br>
+                            Capacidad: 8 jugadores
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="room">
+
+                    <div class="room-image">
+                        🕵️
+                    </div>
+
+                    <div class="room-content">
+
+                        <span class="tag">MISTERIO</span>
+
+                        <h4>El crimen del museo</h4>
+
+                        <div class="room-info">
+                            Dificultad: Media<br>
+                            Duración: 60 min<br>
+                            Capacidad: 6 jugadores
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Nueva reserva</h3>
+
+            <div class="booking-grid">
+
+                <div class="form-group">
+
+                    <label>Sala</label>
+
+                    <select id="room">
+
+                        <option>La mansión del terror</option>
+                        <option>Misión Marte</option>
+                        <option>El crimen del museo</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Hora</label>
+
+                    <select id="time">
+
+                        <option>17:00</option>
+                        <option>19:00</option>
+                        <option>21:00</option>
+
+                    </select>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label>Jugadores</label>
+
+                    <input
+                        id="players"
+                        type="number"
+                        value="2"
+                        min="2"
+                        max="8">
+
+                </div>
+
+            </div>
+
+            <button class="primary" onclick="book()">
+                Confirmar reserva
+            </button>
+
+            <p id="bookingMessage"></p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>Mis reservas</h3>
+
+            <div id="reservations">
+
+                <p class="subtitle">
+                    Todavía no tienes reservas.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
 
 <script>
-const reservas=[];
-function reservar(){
-  const nombre=document.getElementById("nombre").value.trim();
-  if(!nombre) return alert("Escribe tu nombre");
-  reservas.push(sala.value+" · "+hora.value+" · "+nombre);
-  lista.innerHTML=reservas.map(r=>"<li>"+r+"</li>").join("");
-}
-</script>
-</body></html>
 
+let reservations = [];
+
+const capacities = {
+    "La mansión del terror": 6,
+    "Misión Marte": 8,
+    "El crimen del museo": 6
+};
+
+
+function login() {
+
+    const username =
+        document.getElementById("username").value.trim();
+
+    const password =
+        document.getElementById("password").value.trim();
+
+    const error =
+        document.getElementById("loginError");
+
+    error.textContent = "";
+
+    if (
+        username === "jugador"
+        &&
+        password === "1234"
+    ) {
+
+        document
+            .getElementById("login")
+            .classList.add("hidden");
+
+        document
+            .getElementById("playerPanel")
+            .classList.remove("hidden");
+
+    } else {
+
+        error.textContent =
+            "Usuario o contraseña incorrectos.";
+
+    }
+}
+
+
+function logout() {
+
+    document
+        .getElementById("playerPanel")
+        .classList.add("hidden");
+
+    document
+        .getElementById("login")
+        .classList.remove("hidden");
+
+}
+
+
+function book() {
+
+    const room =
+        document.getElementById("room").value;
+
+    const time =
+        document.getElementById("time").value;
+
+    const players =
+        Number(document.getElementById("players").value);
+
+    const message =
+        document.getElementById("bookingMessage");
+
+    const capacity =
+        capacities[room];
+
+
+    if (
+        players < 2
+        ||
+        players > capacity
+    ) {
+
+        message.className = "error";
+
+        message.textContent =
+            `Esta sala admite entre 2 y ${capacity} jugadores.`;
+
+        return;
+
+    }
+
+
+    const occupied =
+        reservations.some(
+            reservation =>
+                reservation.room === room
+                &&
+                reservation.time === time
+        );
+
+
+    if (occupied) {
+
+        message.className = "error";
+
+        message.textContent =
+            "Esta sesión ya está reservada.";
+
+        return;
+
+    }
+
+
+    reservations.push({
+        room,
+        time,
+        players
+    });
+
+
+    message.className = "success";
+
+    message.textContent =
+        "Reserva realizada correctamente.";
+
+
+    renderReservations();
+
+}
+
+
+function renderReservations() {
+
+    const container =
+        document.getElementById("reservations");
+
+
+    if (reservations.length === 0) {
+
+        container.innerHTML =
+            '<p class="subtitle">Todavía no tienes reservas.</p>';
+
+        return;
+
+    }
+
+
+    container.innerHTML = "";
+
+
+    reservations.forEach(
+        (reservation, index) => {
+
+            const element =
+                document.createElement("div");
+
+            element.className =
+                "reservation";
+
+            element.innerHTML = `
+
+                <div>
+
+                    <strong>
+                        ${reservation.room}
+                    </strong>
+
+                    <div class="reservation-data">
+
+                        ${reservation.time}
+                        ·
+                        ${reservation.players} jugadores
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="danger"
+                    onclick="cancelReservation(${index})">
+
+                    Cancelar reserva
+
+                </button>
+
+            `;
+
+            container.appendChild(element);
+
+        }
+    );
+
+}
+
+
+function cancelReservation(index) {
+
+    reservations.splice(index, 1);
+
+    renderReservations();
+
+}
+
+</script>
+
+</body>
+</html>
