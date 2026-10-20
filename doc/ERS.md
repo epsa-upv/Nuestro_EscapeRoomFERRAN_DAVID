@@ -13,84 +13,80 @@
 
 El objetivo de este documento es definir los requisitos iniciales del sistema de creación y gestión de Escape Rooms desarrollado durante el proyecto de la asignatura Ingeniería del Software.
 
-La especificación servirá como base para el desarrollo de las distintas versiones del software a lo largo de los siguientes sprints.
+Esta especificación servirá como base para el desarrollo de las diferentes versiones del software durante los siguientes sprints.
 
-Durante el Sprint 1 se realizará un primer análisis de los requisitos y se desarrollará un prototipo inicial que permita validar la estructura y funcionamiento básico del sistema.
+Durante el Sprint 1 se realizará un primer análisis de los requisitos del sistema y se desarrollará un prototipo inicial que permita comprobar el funcionamiento básico de la aplicación.
 
 ### 1.2 Alcance
 
-El sistema permitirá gestionar un negocio de Escape Rooms presenciales.
+El sistema estará orientado a la gestión de un negocio de Escape Rooms presenciales.
 
-Los jugadores podrán consultar las salas disponibles, visualizar información sobre ellas, consultar sesiones, realizar reservas y gestionar sus propias reservas.
+Los jugadores podrán consultar las salas disponibles, visualizar información sobre ellas, consultar sesiones y realizar reservas.
 
-Por otra parte, los administradores podrán gestionar las salas y, en futuras versiones, gestionar las sesiones, disponibilidad, resultados y demás información relacionada con la actividad del negocio.
+Los administradores podrán gestionar las salas y, progresivamente durante los siguientes sprints, gestionar sesiones, resultados y otra información relacionada con el funcionamiento del negocio.
 
-### 1.3 Tipo de Escape Room
+### 1.3 Tipo de Escape Rooms
 
-Se ha decidido desarrollar un sistema orientado a Escape Rooms temáticos presenciales.
+Se ha decidido desarrollar un sistema para Escape Rooms temáticos presenciales.
 
-Las salas podrán pertenecer a diferentes temáticas, como:
+Las salas podrán tener diferentes temáticas:
 
 - Terror.
 - Misterio.
 - Ciencia ficción.
 - Aventura.
 
-Cada sala tendrá unas características determinadas, entre ellas:
+Cada sala tendrá diferentes características:
 
 - Nombre.
 - Temática.
 - Dificultad.
 - Duración.
-- Capacidad máxima de jugadores.
+- Capacidad máxima.
 
 Las sesiones tendrán una duración aproximada de 60 minutos y estarán destinadas a grupos de jugadores.
 
-### 1.4 Definiciones y abreviaturas
+### 1.4 Definiciones
 
 - **RF:** Requisito funcional.
 - **RNF:** Requisito no funcional.
-- **Jugador:** usuario que consulta y reserva sesiones de Escape Room.
+- **Jugador:** usuario que consulta y reserva Escape Rooms.
 - **Administrador:** usuario encargado de gestionar el sistema.
-- **Sala:** Escape Room disponible para los jugadores.
-- **Sesión:** franja de fecha y hora en la que una sala puede ser reservada.
-- **Reserva:** asignación de un jugador o grupo a una sesión determinada.
+- **Sala:** Escape Room disponible en el sistema.
+- **Sesión:** fecha y hora en la que una sala puede ser reservada.
+- **Reserva:** asignación de un grupo de jugadores a una sesión.
 - **ERS:** Especificación de Requisitos Software.
 
 ---
 
-# 2. Descripción general
+## 2. Descripción general
 
-## 2.1 Perspectiva del producto
+### 2.1 Perspectiva del producto
 
 El sistema será una aplicación accesible mediante navegador web.
 
-En esta primera versión se desarrollará un prototipo funcional utilizando HTML, CSS y JavaScript.
+Durante el Sprint 1 se desarrollará un prototipo utilizando HTML, CSS y JavaScript.
 
-El prototipo permitirá validar la interacción básica entre los usuarios y el sistema antes de desarrollar funcionalidades más avanzadas y mecanismos de persistencia de datos.
+El objetivo de esta primera versión será validar las principales interacciones del sistema antes de incorporar funcionalidades más complejas como persistencia de datos o una base de datos.
 
-## 2.2 Actores
+### 2.2 Actores
 
-El sistema tendrá inicialmente dos actores principales:
+El sistema tendrá inicialmente dos actores principales.
 
-### Jugador
+#### Jugador
 
-Usuario que utiliza el sistema para consultar Escape Rooms y realizar reservas.
-
-Entre sus principales acciones se encuentran:
+El jugador podrá:
 
 - Iniciar sesión.
-- Consultar salas.
+- Consultar Escape Rooms.
 - Consultar sesiones.
 - Realizar reservas.
 - Cancelar reservas.
-- Consultar el historial de reservas.
+- Consultar sus reservas.
 
-### Administrador
+#### Administrador
 
-Usuario encargado de gestionar el negocio y la información disponible en el sistema.
-
-Entre sus funciones se encuentran:
+El administrador podrá:
 
 - Iniciar sesión.
 - Gestionar salas.
@@ -99,65 +95,63 @@ Entre sus funciones se encuentran:
 - Registrar resultados.
 - Exportar información.
 
-## 2.3 Suposiciones y restricciones
+### 2.3 Suposiciones y restricciones
 
-- El sistema será utilizado desde un navegador web.
-- Las reservas estarán asociadas a sesiones concretas.
+- El sistema será utilizado mediante navegador web.
+- Las reservas estarán asociadas a una sesión.
 - Cada sala tendrá una capacidad máxima.
-- Una sesión no podrá reservarse simultáneamente por dos grupos distintos.
-- Los pagos se realizarán físicamente en el establecimiento y quedan fuera del alcance del sistema.
-- Durante el Sprint 1 los datos del prototipo se almacenarán únicamente en memoria y se perderán al recargar la aplicación.
-- La persistencia mediante base de datos se desarrollará en un sprint posterior.
+- Una misma sesión no podrá ser reservada simultáneamente por dos grupos.
+- Los pagos se realizarán en el establecimiento y no formarán parte del sistema.
+- Durante el Sprint 1 los datos se almacenarán únicamente en memoria.
+- La persistencia de datos se implementará en posteriores sprints.
 
 ---
 
-# 3. Requisitos funcionales
+## 3. Requisitos funcionales
 
 | ID | Requisito |
 |---|---|
-| **RF-01** | El sistema permitirá a un visitante registrarse indicando nombre, correo electrónico y contraseña. |
-| **RF-02** | El sistema permitirá iniciar sesión mediante usuario y contraseña y mostrará un mensaje de error cuando las credenciales sean incorrectas. |
-| **RF-03** | El sistema bloqueará temporalmente la cuenta después de cinco intentos consecutivos de inicio de sesión fallidos. |
-| **RF-04** | El jugador podrá consultar el listado de Escape Rooms disponibles, mostrando como mínimo nombre, temática, dificultad, duración y capacidad. |
-| **RF-05** | El jugador podrá consultar las sesiones disponibles para cada sala. |
-| **RF-06** | El jugador podrá realizar una reserva seleccionando una sala, una sesión y el número de jugadores. |
-| **RF-07** | El sistema comprobará la disponibilidad de la sesión y evitará reservar una sesión que ya se encuentre ocupada. |
-| **RF-08** | El jugador podrá cancelar una reserva propia siempre que se encuentre dentro del plazo de cancelación permitido. |
-| **RF-09** | El jugador podrá consultar sus reservas realizadas. |
-| **RF-10** | El administrador podrá crear, modificar y eliminar Escape Rooms indicando sus principales características. |
-| **RF-11** | El administrador podrá crear y gestionar sesiones indicando sala, fecha y hora. |
-| **RF-12** | El administrador podrá registrar el resultado de una sesión, incluyendo el equipo participante, el tiempo empleado y si el Escape Room ha sido superado. |
-| **RF-13** | El administrador podrá exportar la información de las reservas en formato CSV utilizando un rango de fechas. |
+| RF-01 | El sistema permitirá a un visitante registrarse indicando nombre, correo electrónico y contraseña. |
+| RF-02 | El sistema permitirá iniciar sesión mediante usuario y contraseña y mostrará un mensaje de error cuando las credenciales sean incorrectas. |
+| RF-03 | El sistema bloqueará temporalmente una cuenta después de cinco intentos fallidos consecutivos de inicio de sesión. |
+| RF-04 | El jugador podrá consultar el listado de Escape Rooms mostrando nombre, temática, dificultad, duración y capacidad. |
+| RF-05 | El jugador podrá consultar las sesiones disponibles de una sala. |
+| RF-06 | El jugador podrá realizar una reserva seleccionando sala, sesión y número de jugadores. |
+| RF-07 | El sistema comprobará la disponibilidad de una sesión antes de realizar una reserva. |
+| RF-08 | El jugador podrá cancelar una reserva propia dentro del plazo permitido. |
+| RF-09 | El jugador podrá consultar sus reservas. |
+| RF-10 | El administrador podrá crear, modificar y eliminar Escape Rooms. |
+| RF-11 | El administrador podrá crear y gestionar sesiones indicando sala, fecha y hora. |
+| RF-12 | El administrador podrá registrar el resultado de una sesión indicando equipo, tiempo empleado y si se ha superado. |
+| RF-13 | El administrador podrá exportar las reservas en formato CSV seleccionando un rango de fechas. |
 
 ---
 
-# 4. Requisitos no funcionales
+## 4. Requisitos no funcionales
 
 | ID | Requisito |
 |---|---|
-| **RNF-01** | La aplicación deberá funcionar correctamente en navegadores web modernos, incluyendo Google Chrome, Mozilla Firefox y Safari. |
-| **RNF-02** | En la versión final, las contraseñas de los usuarios deberán almacenarse utilizando mecanismos seguros de hash y sal. |
-| **RNF-03** | Las operaciones habituales de consulta y reserva deberán ofrecer un tiempo de respuesta inferior a 2 segundos en condiciones normales. |
-| **RNF-04** | La interfaz deberá adaptarse correctamente a dispositivos de escritorio y dispositivos móviles. |
-| **RNF-05** | Las funciones de administración únicamente podrán ser utilizadas por usuarios con rol de administrador. |
+| RNF-01 | La aplicación deberá funcionar correctamente en navegadores web modernos. |
+| RNF-02 | Las contraseñas deberán almacenarse mediante mecanismos seguros de hash y sal en la versión final. |
+| RNF-03 | Las operaciones habituales de consulta y reserva deberán responder en menos de 2 segundos en condiciones normales. |
+| RNF-04 | La interfaz deberá adaptarse correctamente a ordenadores y dispositivos móviles. |
+| RNF-05 | Las funciones de administración solo podrán ser utilizadas por usuarios con rol de administrador. |
 
 ---
 
-# 5. Casos de uso
+## 5. Casos de uso
 
-Los principales casos de uso identificados son:
-
-## Jugador
+### Jugador
 
 - Registrarse.
 - Iniciar sesión.
 - Consultar salas.
-- Consultar sesiones disponibles.
-- Reservar una sesión.
-- Cancelar una reserva.
-- Consultar historial de reservas.
+- Consultar sesiones.
+- Reservar sesión.
+- Cancelar reserva.
+- Consultar reservas.
 
-## Administrador
+### Administrador
 
 - Iniciar sesión.
 - Gestionar salas.
@@ -165,153 +159,135 @@ Los principales casos de uso identificados son:
 - Registrar resultados.
 - Exportar reservas.
 
-El caso de uso **Reservar sesión** incluye la comprobación de disponibilidad de la sesión antes de confirmar la reserva.
+El caso de uso Reservar sesión incluye la comprobación previa de disponibilidad.
 
 ---
 
-# 6. Especificación de casos de uso
+## 6. Especificación de casos de uso
 
-## CU-01 – Reservar sesión
+### CU-01 – Reservar sesión
 
-**Actor principal:** Jugador  
+**Actor principal:** Jugador.
 
 **Objetivo:** permitir al jugador reservar una sesión de un Escape Room.
 
-### Precondiciones
+#### Precondiciones
 
-- El jugador ha accedido al sistema.
-- Existe al menos una sala disponible.
-- Existe al menos una sesión disponible para la sala seleccionada.
+- El jugador ha iniciado sesión.
+- Existe al menos una sala.
+- Existe al menos una sesión disponible.
 
-### Flujo principal
+#### Flujo principal
 
-1. El jugador consulta las salas disponibles.
-2. El jugador selecciona una sala.
+1. El jugador consulta las salas.
+2. Selecciona una sala.
 3. El sistema muestra las sesiones disponibles.
 4. El jugador selecciona una sesión.
-5. El jugador indica el número de participantes.
-6. El sistema comprueba la capacidad máxima de la sala.
-7. El sistema comprueba que la sesión continúa disponible.
+5. Indica el número de jugadores.
+6. El sistema comprueba la capacidad de la sala.
+7. El sistema comprueba la disponibilidad de la sesión.
 8. El sistema registra la reserva.
 9. El sistema muestra un mensaje de confirmación.
 
-### Flujos alternativos
+#### Flujo alternativo: capacidad superada
 
-**A1 – Capacidad superada**
+1. El sistema detecta que se supera la capacidad.
+2. La reserva se rechaza.
+3. El sistema muestra la capacidad máxima.
+4. El jugador puede modificar el número de participantes.
 
-Si el número de jugadores supera la capacidad de la sala:
+#### Flujo alternativo: sesión ocupada
 
-1. El sistema rechaza la reserva.
-2. El sistema informa de la capacidad máxima permitida.
-3. El jugador puede modificar el número de participantes.
+1. El sistema detecta que la sesión está ocupada.
+2. La reserva se rechaza.
+3. El sistema informa al jugador.
+4. El jugador deberá seleccionar otra sesión.
 
-**A2 – Sesión ocupada**
+#### Postcondición
 
-Si la sesión ya ha sido reservada:
-
-1. El sistema rechaza la reserva.
-2. El sistema informa de que la sesión no está disponible.
-3. El jugador deberá seleccionar otra sesión.
-
-### Postcondición
-
-La reserva queda registrada en el sistema y asociada a la sesión seleccionada.
+La reserva queda registrada y asociada a la sesión seleccionada.
 
 ---
 
-## CU-02 – Iniciar sesión
+### CU-02 – Iniciar sesión
 
-**Actor principal:** Jugador / Administrador  
+**Actor principal:** Jugador / Administrador.
 
-**Objetivo:** autenticar a un usuario y permitirle acceder a las funciones correspondientes a su rol.
+**Objetivo:** autenticar a un usuario y permitir el acceso a las funciones correspondientes a su rol.
 
-### Precondiciones
+#### Precondiciones
 
-- El usuario dispone de unas credenciales válidas.
+- El usuario dispone de credenciales.
 - El sistema está disponible.
 
-### Flujo principal
+#### Flujo principal
 
-1. El sistema solicita el nombre de usuario.
+1. El sistema solicita el usuario.
 2. El sistema solicita la contraseña.
-3. El usuario introduce sus credenciales.
-4. El sistema comprueba las credenciales.
-5. Si son correctas, el sistema identifica el rol del usuario.
+3. El usuario introduce las credenciales.
+4. El sistema valida las credenciales.
+5. El sistema identifica el rol.
 6. El sistema muestra el panel correspondiente.
 
-### Flujo alternativo
+#### Flujo alternativo: credenciales incorrectas
 
-**A1 – Credenciales incorrectas**
-
-1. El sistema detecta que las credenciales no son válidas.
+1. El sistema detecta credenciales incorrectas.
 2. El acceso es rechazado.
 3. El sistema muestra un mensaje de error.
 
-En una versión posterior se implementará el bloqueo de la cuenta después de cinco intentos fallidos consecutivos, correspondiente al requisito RF-03.
-
-### Postcondición
-
-El usuario accede al sistema con los permisos asociados a su rol.
+El bloqueo después de cinco intentos fallidos se desarrollará en una versión posterior.
 
 ---
 
-# 7. Prototipo del Sprint 1
+## 7. Prototipo del Sprint 1
 
-Durante el Sprint 1 se ha desarrollado un primer prototipo funcional en:
+El prototipo inicial se encuentra en:
 
 `src/index.html`
 
-El objetivo de esta primera versión no es implementar la totalidad de los requisitos definidos en la ERS, sino validar el diseño general del sistema y sus principales interacciones.
+Durante el Sprint 1 se implementarán las siguientes funcionalidades:
 
-El prototipo incluye:
-
-- Inicio de sesión como jugador.
-- Inicio de sesión como administrador.
+- Inicio de sesión básico.
 - Validación básica de credenciales.
 - Visualización de Escape Rooms.
-- Información básica de cada sala.
-- Selección de una sesión.
-- Selección del número de jugadores.
-- Comprobación de la capacidad máxima.
-- Comprobación básica de sesiones ya reservadas.
+- Información básica de las salas.
+- Selección de sesión.
+- Número de jugadores.
+- Comprobación de capacidad.
+- Comprobación de sesiones ocupadas.
 - Creación de reservas.
-- Consulta de reservas realizadas.
+- Visualización de reservas.
 - Cancelación de reservas.
 - Panel básico de administración.
-- Creación de salas.
-- Eliminación de salas.
+- Creación y eliminación de salas.
 - Interfaz adaptable a diferentes tamaños de pantalla.
 
-Los datos utilizados durante esta versión se almacenan en memoria mediante JavaScript, por lo que se pierden al actualizar la página.
+Los datos utilizados durante el prototipo se almacenan en memoria mediante JavaScript.
 
 ---
 
-# 8. Limitaciones actuales
+## 8. Limitaciones actuales
 
-La versión desarrollada durante el Sprint 1 constituye únicamente un primer prototipo.
-
-Todavía no se han implementado:
+En el Sprint 1 todavía no se implementarán:
 
 - Registro real de usuarios.
 - Base de datos.
 - Persistencia de salas y reservas.
-- Bloqueo tras cinco intentos fallidos.
+- Bloqueo de cuentas tras cinco intentos.
 - Gestión completa de sesiones.
 - Restricción temporal de cancelaciones.
 - Gestión de resultados.
-- Exportación de reservas a CSV.
+- Exportación CSV.
 - Gestión avanzada de usuarios.
 
-Estas funcionalidades se desarrollarán progresivamente durante los siguientes sprints.
+Estas funcionalidades serán desarrolladas progresivamente en posteriores sprints.
 
 ---
 
-# 9. Conclusiones del Sprint 1
+## 9. Conclusiones
 
-Durante el Sprint 1 se ha establecido la base funcional del proyecto.
+El Sprint 1 permite establecer la base del sistema.
 
-Se ha definido el alcance inicial del sistema, identificado sus actores principales y especificado un conjunto inicial de requisitos funcionales y no funcionales.
+Se han identificado los actores principales, los requisitos funcionales y no funcionales y los principales casos de uso.
 
-Además, se ha desarrollado un prototipo que permite validar las principales interacciones del jugador y una primera versión de las funciones de administración.
-
-Esta primera versión servirá como base para continuar el desarrollo del producto durante los siguientes sprints.
+Además, el prototipo inicial permitirá comprobar la interacción básica entre el jugador y el sistema antes de continuar con el desarrollo de nuevas funcionalidades.
