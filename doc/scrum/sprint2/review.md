@@ -117,7 +117,7 @@ Los datos de `seed.sql` se cargan sin errores:
 
 La consulta C1 confirma el número de registros de cada tabla:
 
-!\[Resultado de la consulta C1](img/c1\_recuento.png)
+
 
 ### Consultas de prueba
 
@@ -139,7 +139,6 @@ Se ejecutan 11 consultas que devuelven los resultados esperados:
 
 Se obtienen las 9 reservas activas. La reserva cancelada no aparece, como se esperaba.
 
-!\[Resultado de la consulta C4](img/c4\_reservas.png)
 
 **Consulta C7 – Estadísticas por sala**
 
