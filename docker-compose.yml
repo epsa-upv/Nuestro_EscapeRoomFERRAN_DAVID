@@ -1,0 +1,35 @@
+# =====================================================
+# ESCAPEHUB - Base de datos PostgreSQL con Docker
+#
+# Uso (desde la carpeta raíz del repositorio):
+#     docker compose up -d
+#
+# La primera vez crea la base de datos escapehub, el usuario
+# escapeuser y carga automáticamente schema.sql y seed.sql.
+#
+# Conexión (pgAdmin, psql o la aplicación):
+#     host: localhost   puerto: 5433
+#     base de datos: escapehub
+#     usuario: escapeuser   contraseña: escape2026
+#
+# Parar:                 docker compose down
+# Parar y borrar datos:  docker compose down -v
+# =====================================================
+
+services:
+  postgres:
+    image: postgres:17
+    container_name: escapehub-postgres
+    environment:
+      POSTGRES_USER: escapeuser
+      POSTGRES_PASSWORD: escape2026
+      POSTGRES_DB: escapehub
+    ports:
+      - "5433:5432"
+    volumes:
+      - escapehub-data:/var/lib/postgresql/data
+      - ./src/db/schema.sql:/docker-entrypoint-initdb.d/01_schema.sql:ro
+      - ./src/db/seed.sql:/docker-entrypoint-initdb.d/02_seed.sql:ro
+
+volumes:
+  escapehub-data:
