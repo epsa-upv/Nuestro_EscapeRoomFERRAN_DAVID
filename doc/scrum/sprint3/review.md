@@ -3,11 +3,8 @@
 **Proyecto:** EscapeHub — Sistema de creación y gestión de Escape Rooms  
 **Equipo:** Ferran y David  
 **Sprint:** 3 — Modelo petición-respuesta y servicios REST  
-**Fecha de review:** [FECHA REAL]  
-**Asistentes:** [CONFIRMAR]  
-**Versión de software presentada:** [COMMIT/TAG SI EXISTE]
-
-> **Guion y acta de revisión preparados, no review celebrada.** Completar solo con resultados verificables una vez se realice la demostración ante el profesor/equipo. No registrar funcionalidades como aprobadas por el simple hecho de estar programadas.
+**Fecha de review:** 11/11/26 
+**Asistentes:** David, Ferran 
 
 ## 1. Objetivo y alcance
 
