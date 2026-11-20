@@ -2,8 +2,19 @@
 import os
 from pathlib import Path
 
-# src/backend/app/config.py -> src/
-CARPETA_SRC = Path(__file__).resolve().parents[2]
+def _carpeta_src():
+    """Carpeta de la web (index.html, js/, db/...). Vale para las dos organizaciones:
+    - backend/ en la raíz del repo  ->  <repo>/src
+    - src/backend/                  ->  <repo>/src
+    """
+    backend = Path(__file__).resolve().parents[1]
+    for candidata in (backend.parent / "src", backend.parent):
+        if (candidata / "index.html").exists() or (candidata / "db").is_dir():
+            return candidata
+    return backend.parent / "src"
+
+
+CARPETA_SRC = _carpeta_src()
 
 
 def url_bd(url):

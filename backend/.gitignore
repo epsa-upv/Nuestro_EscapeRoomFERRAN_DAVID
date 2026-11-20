@@ -1,0 +1,5 @@
+﻿# Archivos que no se suben a GitHub
+venv/
+__pycache__/
+.pytest_cache/
+.env

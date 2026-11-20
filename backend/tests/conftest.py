@@ -1,4 +1,4 @@
-"""Preparación de las pruebas.
+﻿"""Preparación de las pruebas.
 
 Antes de CADA prueba se borra la base de datos de pruebas y se vuelve a crear con:
     schema.sql + seed.sql (Sprint 2) + ampliacion_sprint3.sql (+ migracion_sprint3.sql)
@@ -26,7 +26,7 @@ TEST_DB = os.environ.get(
     "TEST_DATABASE_URL", "postgresql+psycopg://escapeuser:escape2026@localhost:5432/escapehub_test"
 )
 DSN = TEST_DB.replace("postgresql+psycopg://", "postgresql://")
-DIR_SQL = Path(__file__).resolve().parents[2] / "db"
+DIR_SQL = Path(__file__).resolve().parents[2] / "src" / "db"
 PASSWORD = "Demo2026!"
 
 
