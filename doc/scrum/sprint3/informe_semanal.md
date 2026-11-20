@@ -3,7 +3,7 @@
 **Proyecto:** EscapeHub — Sistema de creación y gestión de Escape Rooms  
 **Equipo:** Ferran y David  
 **Periodo:** 04/11/2026 – 18/11/2026  
-**Fecha de cierre:** [COMPLETAR]
+**Fecha de cierre:** 20/11/2026
 
 > Documento de seguimiento preparado por Ferran. Actualizar los estados con evidencias de GitHub y pruebas antes de la entrega. **No marcar trabajo futuro como completado.**
 
@@ -31,16 +31,14 @@ Identificar los recursos de la aplicación, documentar sus interfaces REST y sus
 - Preparación de la interfaz HTTP y de los flujos de jugador/administrador.
 - Preparación de acta de planificación y de este seguimiento.
 
-**Commits/horas reales:** [COMPLETAR A PARTIR DE GITHUB].
-
 ## 4. Actividad de David
 
 [COMPLETAR con sus cambios reales: endpoints, conexión a PostgreSQL, validaciones, pruebas y commits].
 
 ## 5. Reuniones
 
-- Primera reunión: [FECHA, ASISTENTES Y ACUERDOS REALES].
-- Segunda reunión: [FECHA, ASISTENTES Y ACUERDOS REALES].
+- Primera reunión: 15/11/26
+- Segunda reunión: 20/11/26
 
 ## 6. Problemas y riesgos
 
@@ -48,8 +46,6 @@ Identificar los recursos de la aplicación, documentar sus interfaces REST y sus
 - Se ha identificado la necesidad de modificar la unicidad de las reservas activas para conservar cancelaciones sin impedir nuevas reservas.
 - El seed del Sprint 2 contiene hashes de demostración no autenticables.
 - Es necesario validar roles y evitar condiciones de carrera en las reservas.
-
-**Incidencias realmente observadas:** [COMPLETAR].
 
 ## 7. Resultado y pruebas
 
