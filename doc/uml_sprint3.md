@@ -219,3 +219,41 @@ flowchart TD
 ```
 
 **Nota del diagrama:** son relaciones lógicas; la implementación SQL contiene FKs simples y compuestas. `dependencias_reto` referencia dos veces a `retos`, y `pistas_utilizadas` asocia partida, reto y pista. Las decisiones sobre respuestas de tipo `OBJETO`, penalización y autorización son lógica de negocio, no se delegan al frontend.
+
+
+## 12. Ampliación del modelo de clases — migración del backend
+
+**Estado:** propuesta aceptable para la integración, condicionada a revisar `migracion_sprint3.sql` de David. Esta sección representa las relaciones previstas; el archivo original de 14 tablas no contiene por sí mismo estas nuevas columnas.
+
+```mermaid
+classDiagram
+    class Sala {
+      +id : BIGINT
+      +nombre : VARCHAR
+    }
+    class Reto {
+      +id : BIGINT
+      +sala_id : BIGINT
+      +tipo : VARCHAR
+      +objeto_requerido_id : BIGINT nullable
+    }
+    class OpcionReto {
+      +id : BIGINT
+      +reto_id : BIGINT
+      +texto : VARCHAR
+    }
+    class Objeto {
+      +id : BIGINT
+      +sala_id : BIGINT
+      +reto_desbloqueo_id : BIGINT nullable
+    }
+    Sala "1" --> "0..*" Reto : contiene
+    Sala "1" --> "0..*" Objeto : contiene
+    Reto "1" --> "0..*" OpcionReto : tiene opciones
+    Reto "0..1" --> "0..*" Objeto : desbloquea
+    Objeto "0..1" <-- "0..*" Reto : requerido para resolver
+```
+
+**Integridad esperada:** una opción pertenece a un solo reto de tipo `OPCION`; un reto `OBJETO` puede indicar el objeto requerido; un objeto puede señalar el reto que habilita su recogida. Flask comprueba que las relaciones pertenecen a la misma sala, que no hay desbloqueos imposibles y que una opción enviada pertenece al reto. Las cardinalidades son de diseño y deberán contrastarse con las restricciones concretas de la migración.
+
+**Reserva cancelada:** la migración sustituye la unicidad global de `reservas.sesion_id` por una unicidad parcial para reservas activas; así se conserva el historial y solo puede existir una reserva `ACTIVA` por sesión.
