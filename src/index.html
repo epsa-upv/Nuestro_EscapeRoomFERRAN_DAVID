@@ -98,14 +98,21 @@
             <label>Título del reto<input id="challenge-title" maxlength="150" required></label>
             <label>Descripción<textarea id="challenge-description" rows="3" required></textarea></label>
             <div class="form-two"><label>Tipo<select id="challenge-type"><option value="CODIGO">Código</option><option value="TEXTO">Texto</option><option value="OPCION">Opción</option><option value="OBJETO">Objeto</option></select></label><label>Orden<input id="challenge-order" type="number" min="1" step="1" required></label></div>
-            <label>Solución (no aplicable a OBJETO)<input id="challenge-answer" autocomplete="off" placeholder="Solo se envía al servidor, no se almacena en el navegador"></label>
+            <label id="challenge-answer-wrapper">Solución correcta<input id="challenge-answer" autocomplete="off" maxlength="200" placeholder="Respuesta (no se muestra a jugadores)"></label>
+            <label id="challenge-options-wrapper" hidden>Opciones (una por línea, mínimo dos)
+              <textarea id="challenge-options" rows="5" placeholder="GENOMA&#10;CÉLULA&#10;ADN"></textarea>
+              <span class="small-note">La solución debe coincidir con una de estas opciones.</span>
+            </label>
+            <label id="challenge-required-object-wrapper" hidden>Objeto que resuelve el reto
+              <select id="challenge-required-object"><option value="">Selecciona un objeto de esta sala</option></select>
+            </label>
             <button type="submit" class="btn btn-primary">Crear reto</button>
           </form></div>
           <div><div class="mini-heading"><h3>Retos configurados</h3><button id="refresh-challenges" type="button" class="link-btn">Actualizar</button></div><div id="admin-challenges"><p class="empty">Elige una sala.</p></div></div>
         </div>
         <div class="dashboard-grid spaced-top">
           <div><h3>Añadir pista</h3><form id="hint-form" class="form-stack"><label>Reto<select id="hint-challenge" required><option value="">Selecciona reto</option></select></label><label>Orden<input id="hint-order" type="number" min="1" step="1" required></label><label>Contenido<textarea id="hint-content" rows="2" required></textarea></label><label>Penalización (segundos)<input id="hint-penalty" type="number" min="0" step="1" value="0" required></label><button type="submit" class="btn btn-outline">Guardar pista</button></form></div>
-          <div><h3>Crear objeto</h3><form id="object-form" class="form-stack"><label>Sala<select id="object-room" required><option value="">Selecciona sala</option></select></label><label>Nombre<input id="object-name" maxlength="120" required></label><label>Descripción<textarea id="object-description" rows="2"></textarea></label><button type="submit" class="btn btn-outline">Guardar objeto</button></form>
+          <div><h3>Crear objeto</h3><form id="object-form" class="form-stack"><label>Sala<select id="object-room" required><option value="">Selecciona sala</option></select></label><label>Nombre<input id="object-name" maxlength="120" required></label><label>Descripción<textarea id="object-description" rows="2"></textarea></label><label>Desbloquear al completar (opcional)<select id="object-unlock-challenge"><option value="">Disponible desde el inicio</option></select></label><button type="submit" class="btn btn-outline">Guardar objeto</button></form>
           <h3 class="spaced-top">Dependencia entre retos</h3><form id="dependency-form" class="form-stack"><label>Reto que se bloquea<select id="dependency-challenge" required><option value="">Selecciona reto</option></select></label><label>Reto previo<select id="dependency-prerequisite" required><option value="">Selecciona prerrequisito</option></select></label><button type="submit" class="btn btn-outline">Crear dependencia</button></form></div>
         </div>
       </div>
