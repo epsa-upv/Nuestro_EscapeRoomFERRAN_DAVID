@@ -5,7 +5,7 @@
   'use strict';
   const api = window.EscapeAPI;
   const $ = id => document.getElementById(id);
-  const state = { user: null, rooms: [], sessions: [], reservations: [], results: [], games: [], activeGame: null, adminChallenges: [], requestId: 0, gameRequest: 0 };
+  const state = { user: null, rooms: [], sessions: [], reservations: [], results: [], games: [], activeGame: null, adminChallenges: [], adminObjects: [], requestId: 0, gameRequest: 0 };
 
   function text(tag, content, className = '') {
     const el = document.createElement(tag);
@@ -257,6 +257,26 @@
               await Promise.all([loadGames(), openGame(game.id)]);
             }); }); card.append(form);
           }
+        } else if (reto.tipo === 'OPCION') {
+          const options = Array.isArray(reto.opciones) ? reto.opciones : [];
+          if (options.length < 2) card.append(text('p', 'Este reto no tiene opciones configuradas. Consulta con el administrador.', 'muted'));
+          else {
+            const choices = text('div', '', 'challenge-options-list');
+            choices.append(text('p', 'Selecciona la respuesta:', 'muted'));
+            options.forEach(option => {
+              if (typeof option !== 'string') return;
+              choices.append(createAction(option, 'btn-outline challenge-choice', async () => {
+                const buttons = [...choices.querySelectorAll('button')];
+                buttons.forEach(b => { b.disabled = true; });
+                try {
+                  const result = await api.submitAnswer(game.id, reto.id, option);
+                  message(result.correcta ? '¡Correcto! Progreso guardado.' : 'Respuesta incorrecta.', result.correcta ? 'success' : '');
+                  await Promise.all([loadGames(), openGame(game.id)]);
+                } finally { buttons.forEach(b => { b.disabled = false; }); }
+              }));
+            });
+            card.append(choices);
+          }
         } else {
           const form = document.createElement('form'); form.className = 'form-stack spaced-top';
           const label = text('label', 'Introduce tu respuesta');
@@ -301,6 +321,46 @@
     });
   }
 
+  function normalizeOption(value) {
+    return String(value).trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/\s+/g, ' ');
+  }
+  function parseOptions() {
+    return $('challenge-options').value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+  }
+  function refreshChallengeType() {
+    const type = $('challenge-type').value;
+    $('challenge-answer-wrapper').hidden = type === 'OBJETO';
+    $('challenge-options-wrapper').hidden = type !== 'OPCION';
+    $('challenge-required-object-wrapper').hidden = type !== 'OBJETO';
+    $('challenge-answer').disabled = type === 'OBJETO';
+    $('challenge-answer').required = type !== 'OBJETO' && !$('challenge-form').dataset.editId;
+  }
+  function resetChallengeForm() {
+    $('challenge-form').reset();
+    delete $('challenge-form').dataset.editId;
+    delete $('challenge-form').dataset.originalOptions;
+    $('challenge-form').querySelector('[type="submit"]').textContent = 'Crear reto';
+    refreshChallengeType();
+  }
+  async function loadChallengeObjects() {
+    const roomId = $('challenge-room').value;
+    state.adminObjects = [];
+    fillSelect('challenge-required-object', [], 'Selecciona objeto', o => o.nombre);
+    if (!roomId) return;
+    const objects = toList(await api.objects(roomId), 'objetos');
+    if ($('challenge-room').value !== roomId) return;
+    state.adminObjects = objects;
+    fillSelect('challenge-required-object', objects, 'Selecciona objeto', o => o.nombre);
+  }
+  async function loadObjectUnlockChallenges() {
+    const roomId = $('object-room').value;
+    fillSelect('object-unlock-challenge', [], 'Disponible desde el inicio', r => r.titulo);
+    if (!roomId) return;
+    const challenges = toList(await api.challenges(roomId), 'retos');
+    if ($('object-room').value !== roomId) return;
+    fillSelect('object-unlock-challenge', challenges, 'Disponible desde el inicio', r => `${r.orden}. ${r.titulo}`);
+  }
+
   async function loadAdminChallenges() {
     const roomId = $('challenge-room').value;
     const area = $('admin-challenges'); clear(area);
@@ -309,6 +369,7 @@
     if ($('challenge-room').value !== roomId) return;
     state.adminChallenges = data;
     fillChallengeSelectors();
+    await loadChallengeObjects();
     if (!data.length) return empty(area, 'Esta sala todavía no tiene retos.');
     data.forEach(r => record(area, `${r.orden}. ${r.titulo}`, `${r.tipo} · ${safeLabel(r.descripcion)}`, r.activo === false ? 'INACTIVO' : '', [
       createAction('Editar', 'btn-outline', async () => {
@@ -318,8 +379,10 @@
         $('challenge-type').value = r.tipo;
         $('challenge-order').value = r.orden;
         $('challenge-answer').value = '';
-        $('challenge-type').dispatchEvent(new Event('change'));
-        $('challenge-answer').required = false; // solo obligatorio al crear
+        $('challenge-options').value = Array.isArray(r.opciones) ? r.opciones.join('\n') : '';
+        $('challenge-form').dataset.originalOptions = JSON.stringify(Array.isArray(r.opciones) ? r.opciones : []);
+        $('challenge-required-object').value = r.objeto_requerido_id == null ? '' : String(r.objeto_requerido_id);
+        refreshChallengeType();
         $('challenge-form').querySelector('[type="submit"]').textContent = 'Guardar cambios';
         $('challenge-title').focus();
         message('Edición de reto: deja solución vacía para conservar el hash anterior.');
@@ -343,17 +406,37 @@
         const tipo = $('challenge-type').value;
         const titulo = $('challenge-title').value.trim();
         const descripcion = $('challenge-description').value.trim();
-        const respuesta = $('challenge-answer').value;
-        if (!sala_id || !orden || !titulo || !descripcion || (tipo !== 'OBJETO' && !$('challenge-form').dataset.editId && !respuesta.trim())) throw new Error('Completa todos los campos obligatorios del reto.');
-        const body = { titulo, descripcion, tipo, orden, activo: true };
-        if (tipo !== 'OBJETO' && respuesta.trim()) body.respuesta = respuesta;
+        const respuesta = $('challenge-answer').value.trim();
         const editId = $('challenge-form').dataset.editId;
+        if (!sala_id || !orden || !titulo || !descripcion) throw new Error('Completa los campos obligatorios del reto.');
+        const body = { titulo, descripcion, tipo, orden, activo: true };
+        if (tipo === 'OBJETO') {
+          const id = positiveInt($('challenge-required-object').value);
+          if (!id) throw new Error('Selecciona el objeto que resuelve el reto. Créalo primero si no existe.');
+          body.objeto_requerido_id = id;
+        } else if (tipo === 'OPCION') {
+          const opciones = parseOptions();
+          if (opciones.length < 2) throw new Error('Escribe al menos dos opciones, una por línea.');
+          if (opciones.some(o => o.length > 200)) throw new Error('Cada opción admite un máximo de 200 caracteres.');
+          const normalized = opciones.map(normalizeOption);
+          if (new Set(normalized).size !== opciones.length) throw new Error('No repitas opciones.');
+          const oldOptions = JSON.parse($('challenge-form').dataset.originalOptions || '[]');
+          if (!editId || JSON.stringify(oldOptions) !== JSON.stringify(opciones)) {
+            body.opciones = opciones;
+            if (!respuesta) throw new Error('Escribe la solución correcta al crear o modificar opciones.');
+          }
+          if (respuesta && !normalized.includes(normalizeOption(respuesta))) throw new Error('La solución debe ser una de las opciones.');
+          if (respuesta) body.respuesta = respuesta;
+        } else {
+          if (!editId && !respuesta) throw new Error('Escribe la solución del reto.');
+          if (respuesta) body.respuesta = respuesta;
+        }
         if (editId) await api.updateChallenge(editId, body);
         else await api.addChallenge(sala_id, body);
-        $('challenge-title').value = ''; $('challenge-description').value = ''; $('challenge-answer').value = ''; $('challenge-order').value = '';
-        delete $('challenge-form').dataset.editId;
-        $('challenge-form').querySelector('[type="submit"]').textContent = 'Crear reto';
-        message(editId ? 'Reto actualizado.' : 'Reto creado mediante la API.', 'success'); await loadAdminChallenges();
+        resetChallengeForm();
+        message(editId ? 'Reto actualizado.' : 'Reto creado mediante la API.', 'success');
+        await loadAdminChallenges();
+        if ($('object-room').value === String(sala_id)) await loadObjectUnlockChallenges();
       });
     });
     $('hint-form').addEventListener('submit', e => {
@@ -370,8 +453,13 @@
       e.preventDefault(); busy(e.currentTarget, async () => {
         const id = positiveInt($('object-room').value), nombre=$('object-name').value.trim(), descripcion=$('object-description').value.trim();
         if (!id || !nombre) throw new Error('Selecciona sala y nombre de objeto.');
-        await api.addObject(id, { nombre, descripcion, activo: true });
-        $('object-name').value=''; $('object-description').value=''; message('Objeto creado.', 'success');
+        const body = { nombre, descripcion, activo: true };
+        const unlock = positiveInt($('object-unlock-challenge').value);
+        if (unlock) body.reto_desbloqueo_id = unlock;
+        await api.addObject(id, body);
+        $('object-name').value = ''; $('object-description').value = '';
+        if (String(id) === $('challenge-room').value) await loadChallengeObjects();
+        message('Objeto creado.', 'success');
       });
     });
     $('dependency-form').addEventListener('submit', e => {
@@ -392,17 +480,13 @@
     $('refresh-results').addEventListener('click', () => loadResults().catch(report));
     $('refresh-games').addEventListener('click', () => loadGames().catch(report));
     $('challenge-room').addEventListener('change', () => {
-      delete $('challenge-form').dataset.editId;
-      $('challenge-form').querySelector('[type="submit"]').textContent = 'Crear reto';
+      resetChallengeForm();
       loadAdminChallenges().catch(report);
     });
+    $('object-room').addEventListener('change', () => loadObjectUnlockChallenges().catch(report));
     $('refresh-challenges').addEventListener('click', () => loadAdminChallenges().catch(report));
-    $('challenge-type').addEventListener('change', () => {
-      const isObject = $('challenge-type').value === 'OBJETO';
-      $('challenge-answer').disabled = isObject;
-      $('challenge-answer').required = !isObject;
-      if (isObject) $('challenge-answer').value = '';
-    });
+    $('challenge-type').addEventListener('change', refreshChallengeType);
+    refreshChallengeType();
 
     $('login-form').addEventListener('submit', event => {
       event.preventDefault();
