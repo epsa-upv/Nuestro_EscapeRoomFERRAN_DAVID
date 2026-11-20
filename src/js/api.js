@@ -77,6 +77,7 @@
     updateChallenge: (id, body) => request(`/retos/${encodeURIComponent(id)}`, { method: 'PUT', body }),
     deleteChallenge: id => request(`/retos/${encodeURIComponent(id)}`, { method: 'DELETE' }),
     addHint: (challengeId, body) => request(`/retos/${encodeURIComponent(challengeId)}/pistas`, { method: 'POST', body }),
+    objects: roomId => request(`/salas/${encodeURIComponent(roomId)}/objetos`),
     addObject: (roomId, body) => request(`/salas/${encodeURIComponent(roomId)}/objetos`, { method: 'POST', body }),
     addDependency: (id, body) => request(`/retos/${encodeURIComponent(id)}/dependencias`, { method: 'POST', body }),
     // Partidas: solo el titular o administrador puede consultarlas
