@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -107,7 +108,7 @@
         <div class="dashboard-grid">
           <div><form id="challenge-form" class="form-stack">
             <label>Sala<select id="challenge-room" required><option value="">Cargando salas…</option></select></label>
-            <button type="button" class="link-btn" id="refresh-challenge-rooms">↻ Recargar salas para retos</button>
+            <button type="button" class="link-btn" id="refresh-challenge-rooms">↻ Recargar salas para retos</button><p id="challenge-room-status" class="small-note" role="status" aria-live="polite">Pendiente de cargar salas.</p>
             <label>Título del reto<input id="challenge-title" maxlength="150" required></label>
             <label>Descripción<textarea id="challenge-description" rows="3" required></textarea></label>
             <div class="form-two"><label>Tipo<select id="challenge-type"><option value="CODIGO">Código</option><option value="TEXTO">Texto</option><option value="OPCION">Opción</option><option value="OBJETO">Objeto</option></select></label><label>Orden<input id="challenge-order" type="number" min="1" step="1" required></label></div>
