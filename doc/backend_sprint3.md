@@ -1,6 +1,6 @@
 # Backend Sprint 3 — Implementación del contrato REST
 
-**Responsable:** David · **Contrato:** `doc/api_rest.md` (v2.0) · **Cliente:** `src/js/api.js`
+**Responsable:** David y Ferran · **Contrato:** `doc/api_rest.md` (v2.0) · **Cliente:** `src/js/api.js`
 **Tecnología:** Flask + SQLAlchemy + PostgreSQL · Código en `src/backend/`
 
 ---
