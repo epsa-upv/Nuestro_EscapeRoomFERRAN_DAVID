@@ -440,11 +440,7 @@
     $('challenge-answer').required = type !== 'OBJETO' && !$('challenge-form').dataset.editId;
   }
   function resetChallengeForm() {
-    // El <select id="challenge-room"> está dentro del formulario: form.reset() lo
-    // devolvería al placeholder. Guardamos la sala elegida y la restauramos.
-    const roomId = $('challenge-room').value;
     $('challenge-form').reset();
-    $('challenge-room').value = roomId;
     delete $('challenge-form').dataset.editId;
     delete $('challenge-form').dataset.originalOptions;
     $('challenge-form').querySelector('[type="submit"]').textContent = 'Crear reto';
