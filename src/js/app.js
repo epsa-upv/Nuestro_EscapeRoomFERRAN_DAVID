@@ -1,3 +1,4 @@
+
 /* EscapeHub — capa de presentación. Sin arrays falsos ni acceso directo a SQL.
  * Requiere la API de doc/api_rest.md implementada por David.
  */
@@ -104,13 +105,27 @@
     fillSelect('session-room', active, 'Selecciona una sala', r => r.nombre);
     fillSelect('challenge-room', state.rooms, 'Selecciona sala', r => r.nombre);
     fillSelect('object-room', state.rooms, 'Selecciona sala', r => r.nombre);
-    if (isAdmin() && state.rooms.length && !$('challenge-room').value) {
-      $('challenge-room').value = String(state.rooms[0].id);
-      loadAdminChallenges().catch(report);
+    const challengeSelect = $('challenge-room');
+    if (isAdmin() && state.rooms.length && !challengeSelect.value) {
+      challengeSelect.value = String(state.rooms[0].id);
+    }
+    if (isAdmin()) {
+      $('challenge-room-status').textContent = state.rooms.length
+        ? `${state.rooms.length} sala(s) cargada(s). Sala actual: ${challengeSelect.selectedOptions[0]?.textContent || 'ninguna'}.`
+        : 'La API ha devuelto 0 salas. Crea una sala primero o revisa la base de datos.';
+      if (challengeSelect.value) loadAdminChallenges().catch(report);
     }
     renderAdminRooms();
   }
-  async function loadRooms() { state.rooms = toList(await api.rooms(), 'salas'); renderRooms(); }
+  async function loadRooms() {
+    try {
+      state.rooms = toList(await api.rooms(), 'salas');
+      renderRooms();
+    } catch (error) {
+      if (isAdmin()) $('challenge-room-status').textContent = `No se pueden cargar las salas (HTTP ${error.status || 'sin respuesta'}): ${error.message}`;
+      throw error;
+    }
+  }
   async function loadSessions() {
     const requestId = ++state.requestId;
     const roomId = $('booking-room').value;
@@ -180,7 +195,17 @@
       $('game-section').scrollIntoView({ behavior: 'smooth', block: 'start' });
       return;
     }
-    const game = await api.createGame(reservationId);
+    let game;
+    try {
+      game = await api.createGame(reservationId);
+    } catch (error) {
+      if (error.status === 409) {
+        await loadGames();
+        const found = state.games.find(g => Number(g.reserva_id) === reservationId);
+        if (found) { await openGame(found.id); message('La partida ya existía. Se ha abierto la existente.', 'success'); return; }
+      }
+      throw error;
+    }
     await loadGames();
     if (game?.id) await openGame(game.id);
     message('Partida creada. Para iniciarla, comprueba el horario y que la sala tenga retos activos.', 'success');
@@ -528,7 +553,10 @@
   function hookup() {
     $('logout').addEventListener('click', () => signOut());
     $('refresh-rooms').addEventListener('click', () => loadRooms().catch(report));
-    $('refresh-challenge-rooms').addEventListener('click', () => loadRooms().catch(report));
+    $('refresh-challenge-rooms').addEventListener('click', async () => {
+      $('challenge-room-status').textContent = 'Consultando las salas al servidor…';
+      try { await loadRooms(); } catch (error) { report(error); }
+    });
     $('booking-room').addEventListener('change', () => loadSessions());
     $('booking-date').addEventListener('change', () => loadSessions());
     $('refresh-reservations').addEventListener('click', () => loadReservations().catch(report));
@@ -544,6 +572,7 @@
       });
     });
     $('challenge-room').addEventListener('change', () => {
+      $('challenge-room-status').textContent = `Seleccionada: ${$('challenge-room').selectedOptions[0]?.textContent || 'ninguna'}`;
       resetChallengeForm();
       loadAdminChallenges().catch(report);
     });
